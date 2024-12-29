@@ -13,7 +13,7 @@
 //! info!("Hello, world!");
 //! ```
 
-use defmt::Encoder;
+use defmt::{Encoder, Formatter};
 
 #[cfg(feature = "std")]
 use std::{
@@ -116,3 +116,11 @@ fn write_stream(stream: &mut TcpStream, bytes: &[u8], result: &mut io::Result<()
     }
     *result = Ok(());
 }
+
+#[export_name = "_defmt_panic"]
+fn defmt_panic(info: &core::panic::PanicInfo) -> ! {
+    core::panic!("{}", info);
+}
+
+#[export_name = "_defmt_timestamp"]
+fn defmt_timestamp(_f: Formatter<'_>) {}
