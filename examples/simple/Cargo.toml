@@ -1,0 +1,8 @@
+[package]
+name = "simple"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+defmt = "0.3"
+defmt-logger-tcp = { path = "../../defmt-logger-tcp" }

@@ -1,0 +1,13 @@
+[package]
+name = "defmt-logger-tcp"
+version = "0.1.0"
+edition = "2021"
+license = "BSD-2-Clause"
+description = "A defmt logger that sends logs over TCP."
+
+[dependencies]
+defmt = "0.3"
+
+[features]
+default = ["std"]
+std = []
