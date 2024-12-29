@@ -3,9 +3,7 @@ use std::thread;
 use std::time::{Duration, SystemTime};
 
 fn main() {
-    thread::spawn(|| {
-        defmt_logger_tcp::init().unwrap();
-    });
+    thread::spawn(defmt_logger_tcp::run);
 
     // Allow some time for the logger to attach.
     // Use: `defmt-print -e ./target/debug/simple tcp`
@@ -16,5 +14,5 @@ fn main() {
         .unwrap()
         .as_secs();
 
-    info!("Hello, world! The current Unix timestamp is: {}", now);
+    info!("The current Unix timestamp is: {}", now);
 }

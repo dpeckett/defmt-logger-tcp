@@ -10,9 +10,7 @@ In your application, you can use the `init` function to start the logger.
 use defmt::info;
 use std::thread;
 
-thread::spawn(|| {
-  defmt_logger_tcp::init().unwrap();
-});
+thread::spawn(defmt_logger_tcp::run);
  
 info!("Hello, world!");
 ```

@@ -6,9 +6,7 @@
 //! use defmt::info;
 //! use std::thread;
 //!
-//! thread::spawn(|| {
-//!     defmt_logger_tcp::init().unwrap();
-//! });
+//! thread::spawn(defmt_logger_tcp::run);
 //!
 //! info!("Hello, world!");
 //! ```
@@ -30,22 +28,23 @@ static TAKEN: AtomicBool = AtomicBool::new(false);
 static PENDING_STREAMS: Mutex<Vec<(TcpStream, Encoder)>> = Mutex::new(Vec::new());
 static STREAMS: Mutex<Vec<(TcpStream, Encoder)>> = Mutex::new(Vec::new());
 
-/// Initialize the logger, and start listening for connections on `localhost:19021`.
-pub fn init() -> io::Result<()> {
-    let listener = TcpListener::bind("localhost:19021")?;
+/// Run initializes the logger, and starts listening for connections on
+/// `localhost:19021`.
+pub fn run() {
+    let listener = TcpListener::bind("localhost:19021").expect("failed to bind to address");
 
     for stream in listener.incoming() {
-        let stream = stream?;
+        let stream = stream.expect("failed to accept connection");
 
         // Don't block excessively on writes.
         let timeout = Duration::from_millis(100);
-        stream.set_write_timeout(Some(timeout))?;
+        stream
+            .set_write_timeout(Some(timeout))
+            .expect("failed to set write timeout");
 
         let mut streams = PENDING_STREAMS.lock().unwrap();
         streams.push((stream, Encoder::new()));
     }
-
-    Ok(())
 }
 
 #[defmt::global_logger]
@@ -58,6 +57,12 @@ unsafe impl defmt::Logger for Logger {
         }
 
         TAKEN.store(true, Ordering::Relaxed);
+
+        // Move pending streams to active streams.
+        STREAMS
+            .lock()
+            .unwrap()
+            .extend(PENDING_STREAMS.lock().unwrap().drain(..));
 
         on_all_streams(|stream, encoder| {
             let mut result: io::Result<()> = Ok(());
