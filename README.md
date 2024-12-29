@@ -4,8 +4,6 @@ A [defmt](https://defmt.ferrous-systems.com/) logger that sends logs over TCP.
 
 ## Usage
 
-In your application, you can use the `init` function to start the logger.
-
 ```rust
 use defmt::info;
 use std::thread;
