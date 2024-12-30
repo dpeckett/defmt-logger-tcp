@@ -1,4 +1,4 @@
-//! # A defmt logger that sends logs over TCP.
+//! # A defmt logger that serves logs over TCP.
 //!
 //! ## Usage
 //!

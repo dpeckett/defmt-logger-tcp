@@ -1,6 +1,6 @@
 # defmt-logger-tcp
 
-A [defmt](https://defmt.ferrous-systems.com/) logger that sends logs over TCP.
+A [defmt](https://defmt.ferrous-systems.com/) logger that serves logs over TCP.
 
 ## Usage
 
